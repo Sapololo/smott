@@ -1,0 +1,16 @@
+nelmio_cors:
+    defaults:
+        origin_regex: true
+        allow_origin: ['%env(CORS_ALLOW_ORIGIN)%']
+        allow_methods: ['GET', 'OPTIONS', 'POST', 'PUT', 'PATCH', 'DELETE']
+        allow_headers: ['Content-Type', 'Authorization']
+        max_age: 3600
+    paths:
+        '^/':
+          origin_regex: true
+          allow_origin: ['^http://stmarceautt.fr', '^http://mobile.stmarceautt.fr', '^http://localhost:[0-9]+']
+#          allow_headers: ['X-Custom-Auth']
+#          allow_headers: ['Origin', 'Content-Type', 'X-Requested-With', 'Accept', 'X-Custom-Auth']
+          allow_methods: ['GET', 'OPTIONS', 'POST', 'PUT', 'PATCH', 'DELETE']
+          allow_headers: ['Content-Type', 'Authorization', 'X-Custom-Auth']
+          max_age: 3600

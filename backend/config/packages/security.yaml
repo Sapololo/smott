@@ -1,0 +1,90 @@
+security:
+    encoders:
+        FOS\UserBundle\Model\UserInterface: bcrypt
+    role_hierarchy:
+        ROLE_ADMIN:       ROLE_BUREAU
+        ROLE_SUPER_ADMIN: ROLE_ADMIN
+        ROLE_BUREAU: ROLE_USER
+        ROLE_USER: [ROLE_CHANGE_PASSWORD, ROLE_VALIDATE_EMAIL]
+        ROLE_CHANGE_PASSWORD: []
+        ROLE_VALIDATE_EMAIL: []
+
+    providers:
+        fos_userbundle:
+            id: fos_user.user_provider.username
+
+    firewalls:
+        dev:
+            pattern: ^/(_(profiler|wdt)|css|images|js)/
+            security: false
+        default:
+            pattern:   ^/$
+            stateless: true
+            anonymous: true
+        login:
+            pattern:  ^/login
+            stateless: true
+            anonymous: true
+            json_login:
+                check_path: /login-check
+                success_handler: lexik_jwt_authentication.handler.authentication_success
+                failure_handler: lexik_jwt_authentication.handler.authentication_failure
+        refresh:
+            pattern:  ^/api/token/refresh
+            stateless: true
+            anonymous: true
+        forgottenPassword:
+            pattern:  ^/user/forgotten-pw
+            stateless: true
+            anonymous: true
+        api:
+            pattern:    ^/api
+            stateless: true
+            anonymous:  true
+            guard:
+                authenticators:
+                    - lexik_jwt_authentication.jwt_token_authenticator
+        main:
+            pattern: ^/
+            form_login:
+                provider: fos_userbundle
+                csrf_token_generator: security.csrf.token_manager
+            logout:       true
+            anonymous:    true
+
+    access_control:
+            - { path: ^/login$, role: IS_AUTHENTICATED_ANONYMOUSLY }
+            - { path: ^/api/token/refresh, roles: IS_AUTHENTICATED_ANONYMOUSLY }
+            - { path: ^/refresh-token, roles: IS_AUTHENTICATED_ANONYMOUSLY }
+            - { path: ^/api/user/reset-password, roles: IS_AUTHENTICATED_ANONYMOUSLY }
+            - { path: ^/api/user/password, roles: IS_AUTHENTICATED_ANONYMOUSLY }
+            - { path: ^/api/docs, role: IS_AUTHENTICATED_ANONYMOUSLY }
+            - { path: ^/api/email, role: IS_AUTHENTICATED_ANONYMOUSLY }
+            - { path: ^/api/articles/home, role: IS_AUTHENTICATED_ANONYMOUSLY }
+            - { path: ^/api/article/[0-9]+, role: IS_AUTHENTICATED_ANONYMOUSLY }
+            - { path: ^/api/articles, role: IS_AUTHENTICATED_ANONYMOUSLY }
+            - { path: ^/api/events, role: IS_AUTHENTICATED_ANONYMOUSLY }
+            - { path: ^/api/eventbyid/[0-9]+, role: IS_AUTHENTICATED_ANONYMOUSLY }
+            - { path: ^/api/eventbyslug/[a-zA-Z+], role: IS_AUTHENTICATED_ANONYMOUSLY }
+            - { path: ^/api/events/home, role: IS_AUTHENTICATED_ANONYMOUSLY }
+            - { path: ^/api/equipes, role: IS_AUTHENTICATED_ANONYMOUSLY }
+            - { path: ^/api/cartes, role: IS_AUTHENTICATED_ANONYMOUSLY }
+            - { path: ^/api/carte/[0-9]+, role: IS_AUTHENTICATED_ANONYMOUSLY }
+            - { path: ^/api/fftt, role: IS_AUTHENTICATED_ANONYMOUSLY }
+            - { path: ^/api/fftt/brulages/[0-9]+, role: IS_AUTHENTICATED_ANONYMOUSLY }
+#            - { path: ^/api/fftt/detailsRencontre/^, role: IS_AUTHENTICATED_ANONYMOUSLY }
+            - { path: ^/api/partenaires, role: IS_AUTHENTICATED_ANONYMOUSLY }
+            - { path: ^/api/partenaires/[0-9]+, role: IS_AUTHENTICATED_ANONYMOUSLY }
+            - { path: ^/api/videos, role: IS_AUTHENTICATED_ANONYMOUSLY }
+            - { path: ^/api/videoLast, role: IS_AUTHENTICATED_ANONYMOUSLY }
+            - { path: ^/api/email/[A-Z]+, role: IS_AUTHENTICATED_ANONYMOUSLY }
+#            - { path: ^/api/fftt/JoueurDetailsByLicence/[0-9]+, role: IS_AUTHENTICATED_ANONYMOUSLY }
+#            - { path: ^/api/fftt/rencontrePoule/^, role: IS_AUTHENTICATED_ANONYMOUSLY }
+#            - { path: ^/api/fftt/equipeClassementPoule/^, role: IS_AUTHENTICATED_ANONYMOUSLY }
+            - { path: ^/api, roles: [ IS_AUTHENTICATED_FULLY ] }
+            - { path: ^/admin, role: ROLE_ADMIN }
+            - { path: ^/, role: IS_AUTHENTICATED_ANONYMOUSLY }
+#    Comptabilité
+            - { path: ^/api/compteresultat/[0-9]+, role: [ROLE_BUREAU] }
+            - { path: ^/api/ecritures, role: ROLE_ADMIN }
+            - { path: ^/api/ecriture, role: ROLE_ADMIN }

@@ -1,0 +1,7 @@
+swiftmailer:
+    transport: 'smtp'
+    host: 'ssl://ssl0.ovh.net'
+    username: 'contact@stmarceautt.fr'
+    password: 'VacanceS45'
+    port: 465
+    spool: { type: memory }
